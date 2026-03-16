@@ -34,21 +34,22 @@ async def launch_chrome(opts: Optional[Dict[str, Any]] = None) -> Dict[str, Any]
 
     pw = await async_playwright().start()
     try:
-        browser = await pw.chromium.launch(
-            headless=headless,
-            args=[
-                "--disable-blink-features=AutomationControlled",
-                f"--user-agent={stealth_user_agent}",
-                "--no-first-run",
-                "--no-default-browser-check",
-                "--disable-dev-shm-usage",
-                "--disable-background-timer-throttling",
-                "--disable-renderer-backgrounding",
-                "--mute-audio",
-                "--disable-audio-output",
-                "--disable-audio-input",
-            ],
-        )
+        args = [
+            "--disable-blink-features=AutomationControlled",
+            f"--user-agent={stealth_user_agent}",
+            "--no-first-run",
+            "--no-default-browser-check",
+            "--disable-dev-shm-usage",
+            "--disable-background-timer-throttling",
+            "--disable-renderer-backgrounding",
+            "--mute-audio",
+            "--disable-audio-output",
+            "--disable-audio-input",
+        ]
+        # Required for Chromium in Docker/Cloud Run
+        if headless:
+            args.append("--no-sandbox")
+        browser = await pw.chromium.launch(headless=headless, args=args)
     except Exception as e:
         err_msg = str(e).lower()
         if "libasound" in err_msg or "targetclosed" in err_msg or "closed" in err_msg:

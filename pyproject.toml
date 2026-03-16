@@ -5,10 +5,12 @@ description = "Browser Agent - vision-first browser automation"
 requires-python = ">=3.11"
 dependencies = [
     "aiohttp>=3.8.0",
+    "fastapi>=0.115.0",
     "python-dotenv>=1.0.0",
     "playwright>=1.40.0",
     "google-genai>=1.0.0",
     "typing-extensions>=4.0.0",
+    "uvicorn[standard]>=0.32.0",
     "websockets>=12.0",
 ]
 

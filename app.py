@@ -36,28 +36,41 @@ except ImportError:
 model = os.environ.get("BROWSER_AGENT_MODEL", "google/gemini-3-flash-preview")
 headed = os.environ.get("BROWSER_AGENT_HEADED", "").lower() == "true"
 
-TASK = {
-    "instruction": "\n".join([
-        "You are a productivity assistant testing a TodoMVC application.",
-        "This is a single-page app — the URL will not change.",
-        "",
-        "STEP 1 — CREATE TODOS:",
-        "Create these 3 todo items by typing in the input field at the top (it says 'What needs to be done?') and pressing Enter after each:",
-        "  1. Buy groceries",
-        "  2. Walk the dog",
-        "  3. Read a book",
-        "",
-        "STEP 2 — COMPLETE ONE:",
-        "Mark 'Buy groceries' as completed by clicking the circle/checkbox next to it.",
-        "",
-        "STEP 3 — VERIFY:",
-        "Look at the bottom of the list. It should show '2 items left'.",
-        "Report what you see: all 3 todos and their completion status, and the items-left count.",
-    ]),
-    "start_url": "https://todomvc.com/examples/react/dist/",
-    "max_steps": 25,
-}
+# TASK = {
+#     "instruction": "\n".join([
+#         "You are a productivity assistant testing a TodoMVC application.",
+#         "This is a single-page app — the URL will not change.",
+#         "",
+#         "STEP 1 — CREATE TODOS:",
+#         "Create these 3 todo items by typing in the input field at the top (it says 'What needs to be done?') and pressing Enter after each:",
+#         "  1. Buy groceries",
+#         "  2. Walk the dog",
+#         "  3. Read a book",
+#         "",
+#         "STEP 2 — COMPLETE ONE:",
+#         "Mark 'Buy groceries' as completed by clicking the circle/checkbox next to it.",
+#         "",
+#         "STEP 3 — VERIFY:",
+#         "Look at the bottom of the list. It should show '2 items left'.",
+#         "Report what you see: all 3 todos and their completion status, and the items-left count.",
+#     ]),
+#     "start_url": "https://todomvc.com/examples/react/dist/",
+#     "max_steps": 25,
+# }
 
+TASK = {
+  "instruction": "\n".join([
+    
+    "Go to Hacker News (https://news.ycombinator.com).",
+    "Find the top 5 stories on the front page.",
+    "For each story, record: the title, the number of points, and the number of comments.",
+    "Then go to the second page (More link at the bottom) and find the top 3 stories there.",
+    "Return ALL 8 stories in a numbered list with title, points, and comments.",
+  
+  ]),
+  "start_url": "https://news.ycombinator.com",
+  "max_steps": 30,
+};
 
 async def main() -> None:
     from index import Agent

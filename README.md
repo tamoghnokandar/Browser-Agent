@@ -83,9 +83,18 @@ result = await Agent.run_once({
 })
 ```
 
-### Demo example
+### Run `app.py` (demo script)
 
-Create a `.env` file in the project root with:
+`app.py` runs a browser automation task (e.g. scraping books.toscrape.com). Run it from the repo root.
+
+**1. Prerequisites**
+
+- `uv sync` and `playwright install chromium` (see Install above)
+- Gemini API key
+
+**2. Configure**
+
+Create a `.env` file in the project root:
 
 ```
 GEMINI_API_KEY=your-api-key-here
@@ -93,16 +102,37 @@ BROWSER_AGENT_MODEL=google/gemini-3-flash-preview
 BROWSER_AGENT_HEADED=true
 ```
 
-Then run the demo (Linux/macOS):
+- `BROWSER_AGENT_HEADED=true` — show the browser window while the agent runs
+- `BROWSER_AGENT_HEADED=false` — run headless (no visible window)
+
+**3. Run**
 
 ```bash
 # From repo root
 uv run python app.py
 ```
 
-The demo loads variables from `.env` automatically.
+**Windows (PowerShell):**
 
-With `BROWSER_AGENT_HEADED=true`, a Chrome window opens so you can watch the agent browse. Without it, the agent runs headless.
+```powershell
+# Headless (default)
+uv run python app.py
+
+# With visible browser
+$env:BROWSER_AGENT_HEADED="true"; uv run python app.py
+```
+
+**Linux / macOS:**
+
+```bash
+# Headless (default)
+uv run python app.py
+
+# With visible browser
+BROWSER_AGENT_HEADED=true uv run python app.py
+```
+
+The script loads variables from `.env` automatically (or uses shell env vars).
 
 ## Models
 
@@ -269,7 +299,7 @@ agent2 = Agent.resume(data, {"model": "...", "browser": {"type": "local"}})
 │   ├── site_kb.py
 │   └── workflow.py
 │
-├── app.py             # TodoMVC demo
+├── app.py             # Demo script (run: uv run python app.py)
 │
 └── tests/
     ├── unit/
@@ -344,6 +374,32 @@ Browser Agent uses a **perception loop** — screenshot → think → act → re
 uv sync --all-extras
 uv run pytest
 ```
+
+## Docker / Google Cloud Run
+
+Build and run locally:
+
+```bash
+docker build -t browser-agent .
+docker run -p 8080:8080 -e GEMINI_API_KEY=your-key browser-agent
+```
+
+Deploy to Google Cloud Run:
+
+```bash
+# Build and push
+gcloud builds submit --tag us-central1-docker.pkg.dev/YOUR_PROJECT_ID/browser-agent/agent:latest
+
+# Deploy (set GEMINI_API_KEY via Secret Manager)
+gcloud run deploy browser-agent \
+  --image us-central1-docker.pkg.dev/YOUR_PROJECT_ID/browser-agent/agent:latest \
+  --platform managed --region us-central1 \
+  --set-secrets="GEMINI_API_KEY=GEMINI_API_KEY:latest" \
+  --set-env-vars="BROWSER_AGENT_MODEL=google/gemini-3-flash-preview" \
+  --timeout 3600 --memory 2Gi --cpu 2
+```
+
+API: `POST /run` with JSON `{"instruction": "...", "start_url": "https://...", "max_steps": 30}`.
 
 ## Troubleshooting
 
