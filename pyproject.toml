@@ -1,0 +1,26 @@
+[project]
+name = "browser-agent"
+version = "0.1.0"
+description = "Browser Agent - vision-first browser automation"
+requires-python = ">=3.11"
+dependencies = [
+    "aiohttp>=3.8.0",
+    "python-dotenv>=1.0.0",
+    "playwright>=1.40.0",
+    "google-genai>=1.0.0",
+    "typing-extensions>=4.0.0",
+    "websockets>=12.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0",
+    "pytest-asyncio>=0.21",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+pythonpath = ["."]
+# Disable anyio pytest plugin (avoids ImportError with get_available_backends)
+addopts = "-p no:anyio"
