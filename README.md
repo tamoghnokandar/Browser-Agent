@@ -356,7 +356,3 @@ uv run pytest
 **BROWSER_DISCONNECTED** — The CDP socket closed unexpectedly. This is the only error that throws; all action errors are fed back to the model.
 
 **ModuleNotFoundError** — Run from the repo root so the `pythonpath` in `pyproject.toml` is applied (e.g. `uv run python app.py`).
-
-## License
-
-MIT
